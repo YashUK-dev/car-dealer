@@ -1,0 +1,37 @@
+import Car from "../models/Car.js";
+
+// Create a new car
+export const createCar = async (req, res) => {
+  try {
+    const car = await Car.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      message: "Car added successfully",
+      data: car,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get all cars
+export const getCars = async (req, res) => {
+  try {
+    const cars = await Car.find();
+
+    res.status(200).json({
+      success: true,
+      count: cars.length,
+      data: cars,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
