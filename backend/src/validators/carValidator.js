@@ -141,11 +141,35 @@ export const validateCar = (req, res, next) => {
 
   // Validate images
   if (data.images !== undefined) {
-    if (
-      !Array.isArray(data.images) ||
-      !data.images.every((image) => typeof image === "string")
-    ) {
-      errors.push("Images must be an array of strings");
+    if (!Array.isArray(data.images)) {
+      errors.push("Images must be an array");
+    } else {
+      data.images.forEach((image, index) => {
+        if (!image || typeof image !== "object" || Array.isArray(image)) {
+          errors.push(`Image at index ${index} must be an object`);
+          return;
+        }
+
+        if (typeof image.url !== "string" || image.url.trim() === "") {
+          errors.push(`Image at index ${index} must have a valid URL`);
+        }
+
+        if (
+          image.publicId !== undefined &&
+          image.publicId !== null &&
+          (typeof image.publicId !== "string" || image.publicId.trim() === "")
+        ) {
+          errors.push(`Image at index ${index} has an invalid publicId`);
+        }
+
+        const unknownImageFields = Object.keys(image).filter(
+          (field) => !["url", "publicId"].includes(field),
+        );
+
+        if (unknownImageFields.length > 0) {
+          errors.push(`Image at index ${index} contains unknown fields`);
+        }
+      });
     }
   }
 

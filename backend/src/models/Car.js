@@ -61,7 +61,18 @@ const carSchema = new mongoose.Schema(
     },
 
     images: {
-      type: [String],
+      type: [
+        {
+          url: {
+            type: String,
+            required: true,
+          },
+          publicId: {
+            type: String,
+            default: null,
+          },
+        },
+      ],
       default: [],
     },
 
